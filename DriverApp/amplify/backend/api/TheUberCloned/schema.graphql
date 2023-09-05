@@ -1,0 +1,37 @@
+enum CarStatus {
+  NEW
+  PICKING_UP_CLIENT
+  FINISHED
+}
+
+type Order @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userID: ID! @index(name: "byUser")
+  carID: ID! @index(name: "byCar")
+  type: String!
+  originLatitude: Float!
+  originLongitude: Float!
+  destinationLongitude: Float!
+  destinationLatitude: Float!
+  status: CarStatus
+}
+
+type Car @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  type: String!
+  latitude: Float
+  longitue: Float
+  heading: Float
+  Orders: [Order] @hasMany(indexName: "byCar", fields: ["id"])
+  userID: ID! @index(name: "byUser")
+  isActive: Boolean
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  username: String!
+  email: String!
+  Orders: [Order] @hasMany(indexName: "byUser", fields: ["id"])
+  Car: [Car] @hasMany(indexName: "byUser", fields: ["id"])
+}
+ 
